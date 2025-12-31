@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  next-app:
+    build:
+      context: .
+      target: dev  # 开发模式用dev阶段，生产改prod
+    ports:
+      - "3000:3000"  # 宿主机3000端口映射容器3000
+    volumes:
+      # 挂载源码到容器，实现本地改代码容器实时更新
+      - ./:/app
+      # 排除pnpm的依赖目录（避免宿主机和容器依赖冲突）
+      - /app/node_modules
+      - /app/.pnpm-store  # pnpm 专属缓存目录，需排除
+    environment:
+      - NODE_ENV=development  # 开发环境变量
+      - PNPM_HOME=/usr/local/bin  # 确保pnpm命令路径生效
